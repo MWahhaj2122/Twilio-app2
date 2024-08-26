@@ -68,13 +68,13 @@ app.post('/api/twilio-callback', (req, res) => {
         // The recipient of the call, a phone number or a client
         let To = null;
         let From = null;
-        console.log("request2: " + JSON.stringify(request.body));
-        if (request.method == 'POST') {
-            To = request.body.To;
-            From = request.body.From;
+        console.log("request2: " + JSON.stringify(req.body));
+        if (req.method == 'POST') {
+            To = req.body.To;
+            From = req.body.From;
         } else {
-            To = request.query.To;
-            From = request.query.From;
+            To = req.query.To;
+            From = req.query.From;
         }
 
         const voiceResponse = new twilio.twiml.VoiceResponse();
@@ -89,7 +89,7 @@ app.post('/api/twilio-callback', (req, res) => {
             dial.client(To);
         }
         console.log('Response:' + voiceResponse.toString());
-        return response.send(voiceResponse.toString());
+        return res.send(voiceResponse.toString());
  
     } catch (error) {
         console.error('Error retrieving data:', error);
@@ -101,9 +101,9 @@ app.post('/api/twilio-callback', (req, res) => {
 ////CallBack Status!! 
 app.post('/api/callback-status', (req, res) => {
     try {
-        console.log("call Status: " + JSON.stringify(request.body));
+        console.log("call Status: " + JSON.stringify(req.body));
       
-      return response.status(200).send({"status":"Ok"});
+      return res.status(200).send({"status":"Ok"});
 
     } catch (error) {
         console.error('Error handling callback:', error);
