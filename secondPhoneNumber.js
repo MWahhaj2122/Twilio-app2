@@ -64,6 +64,17 @@ app.post('/api/twilio-callback', (req, res) => {
     }
 });
 
+////CallBack Status!! 
+app.post('/api/callback-status', (req, res) => {
+    try {
+        console.log("Request::: ", req);
+        
+    } catch (error) {
+        console.error('Error handling callback:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 // Step 3: Handling Incoming Calls
 app.post('/api/incoming-call', (req, res) => {
     try {
