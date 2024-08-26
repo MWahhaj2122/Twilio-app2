@@ -46,29 +46,42 @@ app.post('/api/request-token', (req, res) => {
 // Step 2: Twilio Callback (Handled by TwiML App)
 app.post('/api/twilio-callback', (req, res) => {
     try {
-        const twiml = new twilio.twiml.VoiceResponse();
-        
-        // Ensure 'To' is provided
-        if (!req.body.To) {
-            return res.status(400).json({ error: 'To parameter is required' });
+        // The recipient of the call, a phone number or a client
+        let To = null;
+        let From = null;
+        console.log("request2: " + JSON.stringify(request.body));
+        if (request.method == 'POST') {
+            To = request.body.To;
+            From = request.body.From;
+        } else {
+            To = request.query.To;
+            From = request.query.From;
         }
 
-        twiml.say('Connecting your call now...');
-        twiml.dial(req.body.To);
+        const voiceResponse = new twilio.twiml.VoiceResponse();
 
-        res.type('text/xml');
-        res.send(twiml.toString());
+        if (!To) {
+            voiceResponse.say("Congratulations! You have made your first call! Good bye.");
+        } else {
+            const dial = voiceResponse.dial({callerId : From});
+            dial.client(To);
+        }
+        console.log('Response:' + voiceResponse.toString());
+        return response.send(voiceResponse.toString());
     } catch (error) {
-        console.error('Error handling callback:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
-});
+        console.error('Error retrieving data:', error);
+        response.status(500).json({ error: 'Error retrieving data' });
+    }});
+
+
 
 ////CallBack Status!! 
 app.post('/api/callback-status', (req, res) => {
     try {
-        console.log("Request::: ", req);
-        
+        console.log("call Status: " + JSON.stringify(request.body));
+      
+      return response.status(200).send({"status":"Ok"});
+
     } catch (error) {
         console.error('Error handling callback:', error);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -79,7 +92,7 @@ app.post('/api/callback-status', (req, res) => {
 app.post('/api/incoming-call', (req, res) => {
     try {
         const twiml = new twilio.twiml.VoiceResponse();
-        
+        console.log("Incoming Call:: ", req.body);
         // Ensure 'To' is provided
         if (!req.body.To) {
             return res.status(400).json({ error: 'To parameter is required' });
@@ -100,3 +113,8 @@ app.post('/api/incoming-call', (req, res) => {
 app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
 });
+
+
+;
+
+
