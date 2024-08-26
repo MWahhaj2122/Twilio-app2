@@ -13,6 +13,25 @@ const port = 3000;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+//Number
+async function isNumber(To) {
+    if(To.length == 1) {
+      if(!isNaN(To)) {
+        console.log("It is a 1 digit long number" + To);
+        return true;
+      }
+    } else if(String(To).charAt(0) == '+') {
+      number = To.substring(1);
+      if(!isNaN(number)) {
+        console.log("It is a number " + To);
+        return true;
+      };
+    } else {
+      if(!isNaN(To)) {
+        console.log("It is a number " + To)
+      }
+    }
+}      
 // Step 1: Generate Access Token Endpoint
 app.post('/api/request-token', (req, res) => {
     try {
@@ -62,12 +81,16 @@ app.post('/api/twilio-callback', (req, res) => {
 
         if (!To) {
             voiceResponse.say("Congratulations! You have made your first call! Good bye.");
+        } else if (isNumber(To)) {
+            const dial = voiceResponse.dial({callerId : From});
+            dial.number(To);
         } else {
             const dial = voiceResponse.dial({callerId : From});
             dial.client(To);
         }
         console.log('Response:' + voiceResponse.toString());
         return response.send(voiceResponse.toString());
+ 
     } catch (error) {
         console.error('Error retrieving data:', error);
         response.status(500).json({ error: 'Error retrieving data' });
