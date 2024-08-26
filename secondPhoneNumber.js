@@ -82,10 +82,10 @@ app.post('/api/twilio-callback', (req, res) => {
         if (!To) {
             voiceResponse.say("Congratulations! You have made your first call! Good bye.");
         } else if (isNumber(To)) {
-            const dial = voiceResponse.dial({callerId : From});
+            const dial = voiceResponse.dial({callerId : From, timeLimit: 30});
             dial.number(To);
         } else {
-            const dial = voiceResponse.dial({callerId : From});
+            const dial = voiceResponse.dial({callerId : From, timeLimit: 30});
             dial.client(To);
         }
         console.log('Response:' + voiceResponse.toString());
