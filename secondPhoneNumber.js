@@ -116,12 +116,10 @@ app.post('/api/incoming-call', (req, res) => {
     try {
         const {VoiceResponse} = require('twilio').twiml;
 
-        // const twiml = new twilio.twiml.VoiceResponse();
+        const twiml = new twilio.twiml.VoiceResponse();
         console.log("Incoming Call:: ", req.body);
         // Ensure 'To' is provided
-        if (!req.body.To) {
-            return res.status(400).json({ error: 'To parameter is required' });
-        }
+        
         const voiceResponse = new VoiceResponse();
 
         voiceResponse.say("You have incoming call.");
@@ -132,7 +130,7 @@ app.post('/api/incoming-call', (req, res) => {
         // twiml.dial(req.body.To);
 
         res.type('text/xml');
-        res.send(twiml.toString());
+        res.send(voiceResponse.toString());
     } catch (error) {
         console.error('Error handling incoming call:', error);
         res.status(500).json({ error: 'Internal Server Error' });
