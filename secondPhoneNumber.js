@@ -114,15 +114,22 @@ app.post('/api/callback-status', (req, res) => {
 // Step 3: Handling Incoming Calls
 app.post('/api/incoming-call', (req, res) => {
     try {
-        const twiml = new twilio.twiml.VoiceResponse();
+        const {VoiceResponse} = require('twilio').twiml;
+
+        // const twiml = new twilio.twiml.VoiceResponse();
         console.log("Incoming Call:: ", req.body);
         // Ensure 'To' is provided
         if (!req.body.To) {
             return res.status(400).json({ error: 'To parameter is required' });
         }
+        const voiceResponse = new VoiceResponse();
 
-        twiml.say('You have an incoming call.');
-        twiml.dial(req.body.To);
+        voiceResponse.say("You have incoming call.");
+        const dial = voiceResponse.dial();
+        dial.client('user');
+ 
+        // twiml.say('You have an incoming call.');
+        // twiml.dial(req.body.To);
 
         res.type('text/xml');
         res.send(twiml.toString());
